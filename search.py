@@ -95,18 +95,34 @@ def blindTreeSearch(problem, fringe):
     while True:
         if fringe.isEmpty():
             print("No solution")
-            sys.exit
+            sys.exit()
         n = fringe.pop()
         if problem.isGoalState(n.state):
             return n.total_path()
         for state, action, cost in problem.getSuccessors(n.state):
             fringe.push(Node(state, n, action, cost))
 
+def blindGraphSearch(problem, fringe):
+    from node import Node
+    import sys
+    fringe.push(Node(problem.getStartState()))
+    expandedStates = []
+    while True:
+        if fringe.isEmpty():
+            print("No solution")
+            sys.exit()
+        n = fringe.pop()
+        expandedStates.append(n.state)
+        if problem.isGoalState(n.state):
+            return n.total_path()
+        for state, action, cost in problem.getSuccessors(n.state):
+            if state not in expandedStates:
+                fringe.push(Node(state, n, action, cost))
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return blingGraphSearch(problem, util.Queue())
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
