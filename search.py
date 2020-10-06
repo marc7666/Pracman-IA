@@ -122,7 +122,7 @@ def blindGraphSearch(problem, fringe):
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    return blingGraphSearch(problem, util.Queue())
+    return blindGraphSearch(problem, util.Queue())
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
