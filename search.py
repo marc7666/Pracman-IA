@@ -16,8 +16,10 @@
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
+import sys
 
 import util
+from node import Node
 
 
 class SearchProblem:
@@ -91,7 +93,7 @@ def blindTreeSearch(problem, fringe):
     while True:
         if fringe.isEmpty():
             print("ERROR: Map has no solution")
-            sys.exit()
+            sys.exit(-1)
         n = fringe.pop()
         if problem.isGoalState(n.state):
             return n.total_path()
@@ -107,7 +109,7 @@ def blindGraphSearch(problem, fringe):
     while True:
         if fringe.isEmpty():
             print("ERROR: Map has no solution")
-            sys.exit()
+            sys.exit(-1)
         n = fringe.pop()
         expandedStates.append(n.state)
         if problem.isGoalState(n.state):
@@ -125,7 +127,29 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    generated = {}
+    fringe = util.PriorityQueue()
+    n = Node(problem.getStartState())
+    fringe.push(n, n.cost)
+    generated[n.state] = [n, 'F'] #'F' indica que esta en el fringe
+    while True:
+        if fringe.isEmpty():
+            print("ERROR: Map has no solution")
+            sys.exit(-1)
+        n = fringe.pop()
+        if problem.isGoalState(n.state):
+            return n.total_path()
+        if generated[n.state][1] == 'E':
+            continue
+        generated[n.state] = [n, 'E'] #'E' significa que esta expandido
+        for state, action, cost, in problem.getSuccessors(n.state):
+            ns = Node(state, n, action, ns.cost + cost)
+            if not ns.state in generated:
+                fringe.push(ns, ns.cost)
+                generated[ns.state] = [ns, 'F']
+            elif ns.cost < generated[ns.state][0].cost: #Para que la condicion sea cierta el nodo debe estar en el fringe
+                fringe.push(ns, ns.cost)
+                generated[ns.state] = [ns, 'F']
 
 
 def nullHeuristic(state, problem=None):
