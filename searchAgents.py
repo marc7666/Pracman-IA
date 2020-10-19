@@ -283,7 +283,7 @@ class CornersProblem(search.SearchProblem):
         self.corners = ((1,1), (1,top), (right, 1), (right, top))
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
-                print 'Warning: no food in corner ' + str(corner)
+                print ('Warning: no food in corner ' + str(corner))
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
         # Please add any code here which you would like to use
         # in initializing the problem
@@ -295,14 +295,15 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.startingPosition, self.corners
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        position , corners = state
+        return len(corners) == 0
 
     def getSuccessors(self, state):
         """
@@ -314,6 +315,7 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
+        position, corners = state
 
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
@@ -325,7 +327,17 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-
+            x, y = position
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall:
+                new_pos = nextx, nexty
+                new_corners = []
+                for corner in corners:
+                    if corner != new_pos:
+                        new_corners.append(corner)
+                successors.append(((new_pos,tuple(new_corners)), action, 1))
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
